@@ -1,6 +1,7 @@
 {
   "expo": {
-    "name": "fyp",
+    "name": "Medical Consultant",
+    "description": "Analyses Your Symptoms Efficiently",
     "slug": "fyp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -23,7 +24,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.AH.MedicalConsultant"
     },
     "web": {
       "favicon": "./assets/favicon.png"
