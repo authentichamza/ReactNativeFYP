@@ -2,8 +2,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet} from 'react-native';
-import Page1 from './Page1';
-import Page2 from './Page2.js';
+import Page1 from './src/screens/Page1';
+import Page2 from './src/screens/Page2';
 
 
 
