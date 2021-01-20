@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import {
-  Dimensions,
   StyleSheet,
   View,
   TouchableHighlight,
-  Text,
+  Text,Button,
   ToastAndroid
 } from 'react-native';
 import AutoTags from 'react-native-tag-autocomplete';
-const mainColor = '#3ca897';
 import firebase  from '../config';
 const db= firebase.database();
 let itemsRef = db.ref('/dataset');
@@ -23,13 +21,7 @@ export default class App extends React.Component {
 constructor(props) {
     super(props);
     this.state = {
-      tags: {
-        tag: '',
-        tagsArray: []
-      },
       tagsSelected:[],
-      tagsColor: mainColor,
-      tagsText: '#fff',
       storedTags:[]
     };
   }
@@ -44,15 +36,10 @@ constructor(props) {
   }
 
   handleSubmit = () => {
-    addItem(this.state.tags.tagsArray);
+    addItem(this.state.tagsSelected);
     ToastAndroid.show('Symptoms saved successfully', ToastAndroid.SHORT)
   };
 
-  updateTagState = (state) => {
-      this.setState({
-        tags: state
-      })
-    };
   handleDelete = index => {
       let tagsSelected = this.state.tagsSelected;
       tagsSelected.splice(index, 1);
@@ -67,24 +54,6 @@ constructor(props) {
     
     return (
       <View style={styles.container}>
-        {/* <TagInput
-          updateState={this.updateTagState}
-          tags={this.state.tags}
-          placeholder="Tags..."                            
-          label='Press space to add a tag'
-          labelStyle={{color: '#fff'}}
-          leftElementContainerStyle={{marginLeft: 3}}
-          containerStyle={{width: (Dimensions.get('window').width - 40)}}
-          inputContainerStyle={[styles.textInput, {backgroundColor: this.state.tagsColor}]}
-          inputStyle={{color: this.state.tagsText}}
-          onFocus={() => this.setState({tagsColor: '#fff', tagsText: mainColor})}
-          onBlur={() => this.setState({tagsColor: mainColor, tagsText: '#fff'})}
-          autoCorrect={false}
-          tagStyle={styles.tag}
-          tagTextStyle={styles.tagText}
-          keysForTag={', '}
-          customElement={this.state.storedTags}
-          /> */}
           <View style={styles.autocompleteContainer}>
             <AutoTags
                 suggestions={this.state.storedTags}
@@ -99,6 +68,10 @@ constructor(props) {
             onPress={this.handleSubmit}>
               <Text style={styles.buttonText}>Add</Text>
           </TouchableHighlight>
+          <Button
+                        title="Go to Page3"
+                        onPress={() => this.props.navigation.navigate('Page3')}
+                    /> 
         </View>
     );
   }
@@ -108,7 +81,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: mainColor,
   },
   textInput: {
       height: 40,

@@ -48,14 +48,6 @@ export default class App extends React.Component {
             snapshot.val().cities5.forEach(element => {
                 this.state.cities5.push(element);
             });
-            console.log(this.state.cities5);
-            // this.setState({
-            //     cities1: cities1,
-            //     cities2: cities2,
-            //     cities3: cities3,
-            //     cities4: cities4,
-            //     cities5: cities5,
-            // })
           });
         
       }
@@ -167,7 +159,7 @@ export default class App extends React.Component {
                     <View style={styles.btn}>
                     <Button
                         title="Go to Details"
-                        onPress={() => navigation.navigate('Page2')}
+                        onPress={() => this.props.navigation.navigate('Page2')}
                     />    
                     </View>        
                 </View>
@@ -213,7 +205,7 @@ const styles = StyleSheet.create({
     },
     
     btn:{
-      marginTop:100
+      marginTop:50
 
     }
     
