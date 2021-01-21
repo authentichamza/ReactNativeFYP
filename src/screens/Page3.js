@@ -23,13 +23,26 @@ let addItem = item => {
     userSymptom: item
   });
 };
-
+let storedTags=[];
+    itemsRef.on('value', (snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+        storedTags.push({'name':childSnapshot.val().Symptom});
+        });
+      });
+let userSymptoms=[];
+input.limitToLast(1).on('value', (snapshot)=>{
+    snapshot.forEach((childSnapshot)=>{
+      childSnapshot.val().userSymptom.forEach(element=>{
+          userSymptoms.push(element)
+      })
+    })
+  })
 export default class App extends React.Component {
 constructor(props) {
     super(props);
     this.state = {
-      tagsSelected:[],
-      storedTags:[],
+      tagsSelected:userSymptoms,
+      storedTags:storedTags,
       index: 0,
       routes: [
         { key: 'first', title: 'First' },
@@ -40,22 +53,9 @@ constructor(props) {
   }
   
   componentDidMount(){
-    let storedTags=[];
-    itemsRef.on('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        storedTags.push({'name':childSnapshot.val().Symptom});
-        });
-      });
-    let userSymptoms=[];
-    input.limitToLast(1).on('value', (snapshot)=>{
-        snapshot.forEach((childSnapshot)=>{
-            childSnapshot.val().userSymptom.forEach(element=>{
-                userSymptoms.push(element)
-            })
-        })
-    })
-    this.setState({ tagsSelected:userSymptoms})
-    this.setState({ storedTags: storedTags})
+    
+    // this.setState({ tagsSelected:userSymptoms})
+    // this.setState({ storedTags: storedTags})
   }
   
   FirstRoute = () => (

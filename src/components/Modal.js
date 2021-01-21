@@ -14,24 +14,7 @@ import ProgressCircle from 'react-native-progress-circle'
 const db= firebase.database();
 let symptomData = db.ref('/dataset');
 let diseaseData =db.ref('/datasetDisease')
-
-export default class App extends React.Component  {
-  constructor(props) {
-    super(props)
-    this.state = {
-      modalVisible: this.props.visible,
-      disease:[],
-      symptoms:[],
-      sessionSymptom:this.props.Symptom,
-    }
-  }
- 
-
-  setModalVisible(visible){
-    this.setState({ modalVisible: visible });
-  }
-  componentDidMount(){
-    let dis=[];
+let dis=[];
     let symptoms=[];
     diseaseData.limitToFirst(1).on('value', (snapshot) => {
       snapshot.forEach((childSnapshot) => {
@@ -42,12 +25,31 @@ export default class App extends React.Component  {
       });
     });
     
-    this.setState({symptoms:symptoms})
-    this.setState({disease:dis})
-    console.log(symptoms)
+    // this.setState({symptoms:symptoms})
+    // this.setState({disease:dis})
+    console.log(dis)
+export default class App extends React.Component  {
+  constructor(props) {
+    super(props)
+    this.state = {
+      modalVisible: this.props.visible,
+      disease:dis,
+      symptoms:symptoms,
+      sessionSymptom:this.props.Symptom,
+    }
+  }
+ 
+
+  setModalVisible(visible){
+    this.setState({ modalVisible: visible });
+  }
+  componentDidMount(){
+    
   }
   render() {
     const { modalVisible } = this.state;
+    const {disease}=this.state;
+    const{symptoms}=this.state;
     return (
       <View style={styles.centeredView}>
         <Modal
@@ -60,9 +62,9 @@ export default class App extends React.Component  {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>{this.state.disease}</Text>
+              <Text style={styles.modalText}>{disease}</Text>
               <FlatList
-                data={this.state.symptoms}
+                data={symptoms}
                 renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
                 numColumns={2}
               />
@@ -80,7 +82,7 @@ export default class App extends React.Component  {
         <View style={styles.container}>
           <TouchableHighlight style={styles.back} onPress={()=>this.setModalVisible(true)}>
               <View style={styles.DisEntry}>
-                  <Text style={styles.text}>{this.state.disease}</Text>
+                  <Text style={styles.text}>{disease}</Text>
                   <ProgressCircle
                       percent={30}
                       radius={50}
@@ -89,8 +91,8 @@ export default class App extends React.Component  {
                       shadowColor="#999"
                       bgColor="#fff"
                   >
-                  <Text style={{ fontSize: 18 }}>{'30%'}</Text>
-              </ProgressCircle>
+                  <Text style={{ fontSize: 18 }}>{'70%'}</Text>
+                </ProgressCircle>
               </View>
           </TouchableHighlight>
         </View>
