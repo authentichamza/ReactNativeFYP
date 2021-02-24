@@ -12,7 +12,7 @@ import firebase  from '../config';
 import ProgressCircle from 'react-native-progress-circle'
 
 const db= firebase.firestore();
-let diseaseData =db.collection('datasetDisease')
+let diseaseData =db.collection('datasetDisease')// storing connection of datasetDisease into diseaseData var
 let dis='HIV';
 let symptoms=[];
 diseaseData.doc('HIV').get().then(querySnapshot => {
@@ -26,7 +26,7 @@ export default class App extends React.Component  {
   constructor(props) {
     super(props)
     this.state = {
-      modalVisible: this.props.visible,
+      modalVisible: this.props.visible,// Modal visible variable received from page 3
       disease:dis,
       symptoms:symptoms,
       sessionSymptom:this.props.Symptom,
@@ -34,19 +34,19 @@ export default class App extends React.Component  {
   }
  
 
-  setModalVisible(visible){
+  setModalVisible(visible){// changing visibility method 
     this.setState({ modalVisible: visible });
   }
   componentDidMount(){
     
   }
   render() {
-    const { modalVisible } = this.state;
+    const { modalVisible } = this.state; // assigning states to name for not writing this.state.name again and again
     const {disease}=this.state;
     const{symptoms}=this.state;
     return (
       <View style={styles.centeredView}>
-        <Modal
+        <Modal //Modal with disease Name and flat list of specific disease symptoms
           animationType="slide"
           transparent={true}
           visible={modalVisible}
@@ -60,7 +60,7 @@ export default class App extends React.Component  {
               <FlatList
                 data={symptoms}
                 renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
-                numColumns={2}
+                numColumns={2} // 2 symptoms per row
               />
               <TouchableHighlight
                 style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
@@ -74,7 +74,7 @@ export default class App extends React.Component  {
           </View>
         </Modal>
         <View style={styles.container}>
-          <TouchableHighlight style={styles.back} onPress={()=>this.setModalVisible(true)}>
+          <TouchableHighlight style={styles.back} onPress={()=>this.setModalVisible(true)}>// the touchable highlight shown 
               <View style={styles.DisEntry}>
                   <Text style={styles.text}>{disease}</Text>
                   <ProgressCircle
