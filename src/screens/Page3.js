@@ -14,12 +14,12 @@ import firebase  from '../config';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import Modal from '../components/Modal';
 
-const db= firebase.firestore();
-let itemsRef = db.collection('datasetSymptom');
+const db= firebase.firestore();//for firestore connection from firebase
+let itemsRef = db.collection('datasetSymptom');// 
 let input = db.collection('tags');
 
 let addItem = item => {
-  input.push({
+  input.push({// pushing the user added symptoms to a firebase generated unique id.
     userSymptom: item
   });
 };
@@ -30,8 +30,13 @@ export default class App extends React.Component {
 constructor(props) {
     super(props);
     this.state = {
+<<<<<<< HEAD
       tagsSelected:this.props.route.params.selected,
       storedTags:this.props.route.params.stored,
+=======
+      tagsSelected:this.props.route.params.stored,// stored tags from previous page 
+      storedTags:[],
+>>>>>>> 3239ca88fb0e4de41a95ad9df3773e0bef6f2e7b
       index: 0,
       routes: [
         { key: 'first', title: 'First' },
@@ -42,48 +47,57 @@ constructor(props) {
   }
   
   componentDidMount(){
+<<<<<<< HEAD
     // let storedTags=[];
     // itemsRef.get().then(querySnapshot => {
     //   querySnapshot.docs.forEach(doc => {storedTags.push({'name':doc.id});});
     // });
     // console.log(storedTags);
     // this.setState({ storedTags: storedTags})
+=======
+    let storedTags=[];
+    itemsRef.get().then(querySnapshot => {// go to collection dataset Symptom 
+      querySnapshot.docs.forEach(doc => {storedTags.push({'name':doc.id});});//and snap all doc id  and store in it stored Tags
+    });
+    console.log(storedTags);
+    this.setState({ storedTags: storedTags})
+>>>>>>> 3239ca88fb0e4de41a95ad9df3773e0bef6f2e7b
     
   }
   
-  FirstRoute = () => (
+  FirstRoute = () => (// What to show in the first tab
     <ScrollView style={[styles.container, { backgroundColor: '#ff4081' }]} >
-    <Modal visible={this.state.modalVisible} Symptom={this.state.tagsSelected} />
+    <Modal visible={this.state.modalVisible} Symptom={this.state.tagsSelected} /> //Modal with props to be sent to Modal component so that visiblity can be adjusted
     </ScrollView>
   );
-  SecondRoute = () => (
+  SecondRoute = () => (// What to show in the second tab
     <View style={[styles.container, { backgroundColor: '#673ab7' }]}>
 
     </View>
   );
-  ThirdRoute = () => (
+  ThirdRoute = () => (// What to show in the third tab
     <View style={[styles.container, { backgroundColor: '#673ab7' }]}>
     
     </View>
   );
-  handleSubmit = () => {
+  handleSubmit = () => {// submit symptoms
     addItem(this.state.tagsSelected);
-    ToastAndroid.show('Symptoms saved successfully', ToastAndroid.SHORT)
+    ToastAndroid.show('Symptoms saved successfully', ToastAndroid.SHORT)// 
   };
 
-  handleDelete = index => {
+  handleDelete = index => {// to delete a tag
       let tagsSelected = this.state.tagsSelected;
       tagsSelected.splice(index, 1);
       this.setState({ tagsSelected });
    }
    
-  handleAddition = suggestion => {
+  handleAddition = suggestion => {// add bubble symptom
       this.setState({ tagsSelected: this.state.tagsSelected.concat([suggestion]) });
    }
-   _handleIndexChange = index => this.setState({ index });
+   _handleIndexChange = index => this.setState({ index });// receives the index of the new tab as argument
 
  
-   _renderScene = SceneMap({
+   _renderScene = SceneMap({// SceneMap takes an object with the mapping of route.key to React components and returns a function to use with renderScene prop 
     first: this.FirstRoute,
     second: this.SecondRoute,
     third: this.ThirdRoute,
@@ -94,21 +108,21 @@ constructor(props) {
         <View style={styles.container}>
             <View style={styles.row}>
                 <View style={styles.autocompleteContainer}>
-                    <AutoTags
+                    <AutoTags // Text adding component with auto completion feature and bubble feature
                         suggestions={this.state.storedTags}
                         tagsSelected={this.state.tagsSelected}
                         handleAddition={this.handleAddition}
                         handleDelete={this.handleDelete}
                         placeholder="Add a Symptom.." />
                 </View>
-                <TouchableHighlight
+                <TouchableHighlight//  wrapper for making views respond properly to touches
                     style={styles.button}
                     underlayColor="blue"
                     onPress={this.handleSubmit}>
                     <Text style={styles.buttonText}>Add</Text>
                 </TouchableHighlight>
             </View>
-            <TabView
+            <TabView// Tabbed View component
                 style={styles.tab}
                 navigationState={this.state}
                 renderScene={this._renderScene}
