@@ -14,35 +14,24 @@ import firebase  from '../config';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import Modal from '../components/Modal';
 
-const db= firebase.database();
-let itemsRef = db.ref('/dataset');
-let input = db.ref('/tags');
+const db= firebase.firestore();
+let itemsRef = db.collection('datasetSymptom');
+let input = db.collection('tags');
 
 let addItem = item => {
   input.push({
     userSymptom: item
   });
 };
-let storedTags=[];
-    itemsRef.on('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        storedTags.push({'name':childSnapshot.val().Symptom});
-        });
-      });
-let userSymptoms=[];
-input.limitToLast(1).on('value', (snapshot)=>{
-    snapshot.forEach((childSnapshot)=>{
-      childSnapshot.val().userSymptom.forEach(element=>{
-          userSymptoms.push(element)
-      })
-    })
-  })
+
+
+
 export default class App extends React.Component {
 constructor(props) {
     super(props);
     this.state = {
-      tagsSelected:userSymptoms,
-      storedTags:storedTags,
+      tagsSelected:this.props.route.params.stored,
+      storedTags:[],
       index: 0,
       routes: [
         { key: 'first', title: 'First' },
@@ -53,9 +42,13 @@ constructor(props) {
   }
   
   componentDidMount(){
+    let storedTags=[];
+    itemsRef.get().then(querySnapshot => {
+      querySnapshot.docs.forEach(doc => {storedTags.push({'name':doc.id});});
+    });
+    console.log(storedTags);
+    this.setState({ storedTags: storedTags})
     
-    // this.setState({ tagsSelected:userSymptoms})
-    // this.setState({ storedTags: storedTags})
   }
   
   FirstRoute = () => (
@@ -96,6 +89,7 @@ constructor(props) {
     third: this.ThirdRoute,
   });
   render() {
+    
     return (
         <View style={styles.container}>
             <View style={styles.row}>

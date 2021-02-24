@@ -8,16 +8,18 @@ import {
 } from 'react-native';
 import AutoTags from 'react-native-tag-autocomplete';
 import firebase  from '../config';
-const db= firebase.database();
-let itemsRef = db.ref('/dataset');
-let input = db.ref('/tags');
+const db= firebase.firestore();
+let itemsRef = db.collection('datasetSymptom');
+let input = db.collection('userSymptoms');
 let addItem = item => {
-  input.push({
+  input.doc().set({
     userSymptom: item
   });
+  
 };
 
 export default class App extends React.Component {
+  
 constructor(props) {
     super(props);
     this.state = {
@@ -27,12 +29,11 @@ constructor(props) {
   }
   componentDidMount(){
     let storedTags=[];
-    itemsRef.on('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        storedTags.push({'name':childSnapshot.val().Symptom});
-        });
-      });
+    itemsRef.get().then(querySnapshot => {
+      querySnapshot.docs.forEach(doc => {storedTags.push({'name':doc.id});});
+    });
     this.setState({ storedTags: storedTags})
+    
   }
 
   handleSubmit = () => {
@@ -70,9 +71,12 @@ constructor(props) {
           </TouchableHighlight>
           <Button
                         title="Go to Page3"
-                        onPress={() => this.props.navigation.navigate('Page3')}
+                        onPress={() => this.props.navigation.navigate('Page3',{
+                          stored:this.state.tagsSelected
+                        })}
                     /> 
         </View>
+        
     );
   }
 }
