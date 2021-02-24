@@ -8,10 +8,10 @@ import {
 } from 'react-native';
 import AutoTags from 'react-native-tag-autocomplete';
 import firebase  from '../config';
-const db= firebase.firestore();
-let itemsRef = db.collection('datasetSymptom');
-let input = db.collection('userSymptoms');
-let addItem = item => {
+const db= firebase.firestore();// connect with firestore of firebase 
+let itemsRef = db.collection('datasetSymptom');// store datasetSymptom collection into itemref
+let input = db.collection('userSymptoms');// store userSymptoms collection into itemref
+let addItem = item => {//Add 
   input.doc().set({
     userSymptom: item
   });
