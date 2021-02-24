@@ -18,10 +18,11 @@ const db= firebase.firestore();//for firestore connection from firebase
 let itemsRef = db.collection('datasetSymptom');// 
 let input = db.collection('tags');
 
-let addItem = item => {
-  input.push({// pushing the user added symptoms to a firebase generated unique id.
+let addItem = item => {//Add into userSymptom with firestore generated unique id document
+  input.doc().set({
     userSymptom: item
   });
+  
 };
 
 
@@ -30,13 +31,9 @@ export default class App extends React.Component {
 constructor(props) {
     super(props);
     this.state = {
-<<<<<<< HEAD
-      tagsSelected:this.props.route.params.selected,
-      storedTags:this.props.route.params.stored,
-=======
-      tagsSelected:this.props.route.params.stored,// stored tags from previous page 
-      storedTags:[],
->>>>>>> 3239ca88fb0e4de41a95ad9df3773e0bef6f2e7b
+      tagsSelected:this.props.route.params.selected,//selected tags stored from page 2
+      storedTags:this.props.route.params.stored,//stored tags stored from page 2
+
       index: 0,
       routes: [
         { key: 'first', title: 'First' },
@@ -47,21 +44,13 @@ constructor(props) {
   }
   
   componentDidMount(){
-<<<<<<< HEAD
+
     // let storedTags=[];
     // itemsRef.get().then(querySnapshot => {
     //   querySnapshot.docs.forEach(doc => {storedTags.push({'name':doc.id});});
     // });
     // console.log(storedTags);
     // this.setState({ storedTags: storedTags})
-=======
-    let storedTags=[];
-    itemsRef.get().then(querySnapshot => {// go to collection dataset Symptom 
-      querySnapshot.docs.forEach(doc => {storedTags.push({'name':doc.id});});//and snap all doc id  and store in it stored Tags
-    });
-    console.log(storedTags);
-    this.setState({ storedTags: storedTags})
->>>>>>> 3239ca88fb0e4de41a95ad9df3773e0bef6f2e7b
     
   }
   
@@ -115,14 +104,14 @@ constructor(props) {
                         handleDelete={this.handleDelete}
                         placeholder="Add a Symptom.." />
                 </View>
-                <TouchableHighlight//  wrapper for making views respond properly to touches
+                <TouchableHighlight //  wrapper for making views respond properly to touches
                     style={styles.button}
                     underlayColor="blue"
                     onPress={this.handleSubmit}>
                     <Text style={styles.buttonText}>Add</Text>
                 </TouchableHighlight>
             </View>
-            <TabView// Tabbed View component
+            <TabView // Tabbed View component
                 style={styles.tab}
                 navigationState={this.state}
                 renderScene={this._renderScene}
