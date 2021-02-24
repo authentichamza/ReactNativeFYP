@@ -30,8 +30,8 @@ export default class App extends React.Component {
 constructor(props) {
     super(props);
     this.state = {
-      tagsSelected:this.props.route.params.stored,
-      storedTags:[],
+      tagsSelected:this.props.route.params.selected,
+      storedTags:this.props.route.params.stored,
       index: 0,
       routes: [
         { key: 'first', title: 'First' },
@@ -42,12 +42,12 @@ constructor(props) {
   }
   
   componentDidMount(){
-    let storedTags=[];
-    itemsRef.get().then(querySnapshot => {
-      querySnapshot.docs.forEach(doc => {storedTags.push({'name':doc.id});});
-    });
-    console.log(storedTags);
-    this.setState({ storedTags: storedTags})
+    // let storedTags=[];
+    // itemsRef.get().then(querySnapshot => {
+    //   querySnapshot.docs.forEach(doc => {storedTags.push({'name':doc.id});});
+    // });
+    // console.log(storedTags);
+    // this.setState({ storedTags: storedTags})
     
   }
   

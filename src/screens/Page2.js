@@ -72,7 +72,8 @@ constructor(props) {
           <Button
                         title="Go to Page3"
                         onPress={() => this.props.navigation.navigate('Page3',{
-                          stored:this.state.tagsSelected
+                          selected:this.state.tagsSelected,
+                          stored:this.state.storedTags
                         })}
                     /> 
         </View>
