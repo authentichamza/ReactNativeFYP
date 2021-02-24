@@ -11,19 +11,13 @@ import {
 import firebase  from '../config';
 import ProgressCircle from 'react-native-progress-circle'
 
-const db= firebase.database();
-let symptomData = db.ref('/dataset');
-let diseaseData =db.ref('/datasetDisease')
-let dis=[];
-    let symptoms=[];
-    diseaseData.limitToFirst(1).on('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        dis.push(childSnapshot.val().Disease);
-        childSnapshot.val().Symptom.forEach((key)=>{ 
-          symptoms.push({key:key})
-        })
-      });
-    });
+const db= firebase.firestore();
+let diseaseData =db.collection('datasetDisease')
+let dis='HIV';
+let symptoms=[];
+diseaseData.doc('HIV').get().then(querySnapshot => {
+        symptoms.push(querySnapshot.data());
+});
     
     // this.setState({symptoms:symptoms})
     // this.setState({disease:dis})
