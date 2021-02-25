@@ -1,4 +1,4 @@
-import React, { Component,useState } from 'react';
+import React, { Component} from 'react';
 import {
   StyleSheet,
   View,
@@ -6,17 +6,17 @@ import {
   Text,
   ToastAndroid,
   ScrollView,
-  
+  ActivityIndicator
 
 } from 'react-native';
 import AutoTags from 'react-native-tag-autocomplete';
 import firebase  from '../config';
 import { TabView, SceneMap } from 'react-native-tab-view';
-import Modal from '../components/Modal';
-
+import DiseaseComponent from '../components/DiseaseComponent';
+var data;
 const db= firebase.firestore();//for firestore connection from firebase
-let itemsRef = db.collection('datasetSymptom');// 
-let input = db.collection('tags');
+let input = db.collection('userSymptoms');
+let symptomsRef=db.collection('datasetDisease')
 
 let addItem = item => {//Add into userSymptom with firestore generated unique id document
   input.doc().set({
@@ -26,14 +26,15 @@ let addItem = item => {//Add into userSymptom with firestore generated unique id
 };
 
 
-
 export default class App extends React.Component {
 constructor(props) {
     super(props);
+    this.modalElement = React.createRef();
     this.state = {
       tagsSelected:this.props.route.params.selected,//selected tags stored from page 2
       storedTags:this.props.route.params.stored,//stored tags stored from page 2
-
+      result:['HIV','Flu'],
+      data1:[],
       index: 0,
       routes: [
         { key: 'first', title: 'First' },
@@ -43,20 +44,35 @@ constructor(props) {
     };
   }
   
-  componentDidMount(){
-
-    // let storedTags=[];
-    // itemsRef.get().then(querySnapshot => {
-    //   querySnapshot.docs.forEach(doc => {storedTags.push({'name':doc.id});});
-    // });
-    // console.log(storedTags);
-    // this.setState({ storedTags: storedTags})
+  async componentDidMount(){
+    let select=[];
+    let tagsSelected=this.state.tagsSelected
+    tagsSelected.forEach(element => {
+      select.push(element.name)
+    });
     
+    await symptomsRef.where("Symptom", "array-contains-any", select).get().then((querySnapshot) => {
+      data=querySnapshot.docs.map((doc) => (doc.id));
+      console.log("in", data);
+      // Users with > 1 book:  [ { id: 'user-1', count: 1 } ]
+    });
+    // console.log("out",this.state.result)
+      this.onResultChange(data)
+      this.modalElement.current.changeDis(this.state.result)
+     console.log("out",this.state.result)
+     
+    // console.log("out",result)
+
   }
-  
-  FirstRoute = () => (// What to show in the first tab
-    <ScrollView style={[styles.container, { backgroundColor: '#ff4081' }]} >
-    <Modal visible={this.state.modalVisible} Symptom={this.state.tagsSelected} /> //Modal with props to be sent to Modal component so that visiblity can be adjusted
+  onResultChange(data){
+    this.setState({result:data})
+  }
+  FirstRoute = () => (// What to show in the first tab 
+    //Modal with props to be sent to Modal component so that visiblity can be adjusted iinside a scroll view
+
+    <ScrollView style={[styles.container, { backgroundColor: 'white' }]} >
+      
+    <DiseaseComponent ref={this.modalElement} visible={this.state.modalVisible} Symptom={this.state.tagsSelected} />
     </ScrollView>
   );
   SecondRoute = () => (// What to show in the second tab
@@ -84,15 +100,24 @@ constructor(props) {
       this.setState({ tagsSelected: this.state.tagsSelected.concat([suggestion]) });
    }
    _handleIndexChange = index => this.setState({ index });// receives the index of the new tab as argument
-
+   _renderScene=SceneMap({
+     first:this.FirstRoute,
+     second:this.SecondRoute,
+     third:this.ThirdRoute
+   })
  
-   _renderScene = SceneMap({// SceneMap takes an object with the mapping of route.key to React components and returns a function to use with renderScene prop 
-    first: this.FirstRoute,
-    second: this.SecondRoute,
-    third: this.ThirdRoute,
-  });
+   
   render() {
     
+    // if (!this.state.result) {
+    //   return (
+    //     <ActivityIndicator
+    //       animating={true}
+    //       style={styles.indicator}
+    //       size="large"
+    //     />
+    //   );
+    // } 
     return (
         <View style={styles.container}>
             <View style={styles.row}>
@@ -108,8 +133,11 @@ constructor(props) {
                     style={styles.button}
                     underlayColor="blue"
                     onPress={this.handleSubmit}>
-                    <Text style={styles.buttonText}>Add</Text>
+                    <Text style={styles.buttonText}>Search</Text>
                 </TouchableHighlight>
+            </View>
+            <View>
+              <Text>{this.state.result}</Text>
             </View>
             <TabView // Tabbed View component
                 style={styles.tab}
@@ -117,6 +145,7 @@ constructor(props) {
                 renderScene={this._renderScene}
                 renderTabBar={this._renderTabBar}
                 onIndexChange={this._handleIndexChange}
+                
             />
             
         </View>
@@ -128,6 +157,7 @@ constructor(props) {
 const styles = StyleSheet.create({
   container: {
     flex:1,
+    backgroundColor:'white'
   },
   row:{
     flexDirection:"row"
@@ -141,13 +171,13 @@ const styles = StyleSheet.create({
   },
   button:{
     flex:0,
-    backgroundColor:'white',
-    borderColor: 'black',
+    backgroundColor:'#00abb1',
+    borderColor: '#00abb1',
     borderWidth: 1,
     borderRadius: 5,
     padding: 2,
     justifyContent:'flex-end',
-    height:30,
+    marginBottom:10,
     justifyContent:'center',
 
   },
@@ -195,6 +225,12 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center"
+  },
+  indicator: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 80
   }
 
 });
