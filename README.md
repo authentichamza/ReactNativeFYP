@@ -2,7 +2,7 @@
 
   1. **OVERVIEW:**
 
-The Healthcare system plays a significant role in the progress of a country. In Pakistan, especially in **i** ts rural areas,[2] healthcare system is not good enough to facilitate the rural population that is more than 60% of the total population of Pakistan [3] and one reason for this is the unavailability of specialist doctors. Almost half a million people die annually due to errors in diagnostics and medication in Pakistan [4]. Our aim is to develop an application (intelligent medical consultant) for doctors that will minimize diagnostics errors, especially in the rural reality of Pakistan.
+The Healthcare system plays a significant role in the progress of a country. In Pakistan, especially in its rural areas, healthcare system is not good enough to facilitate the rural population that is more than 60% of the total population of Pakistan and one reason for this is the unavailability of specialist doctors. Almost half a million people die annually due to errors in diagnostics and medication in Pakistan . Our aim is to develop an application (intelligent medical consultant) for doctors that will minimize diagnostics errors, especially in the rural reality of Pakistan.
 
 **1.2**  **INTELLIGENT MEDICAL CONSULTANT:**
 
