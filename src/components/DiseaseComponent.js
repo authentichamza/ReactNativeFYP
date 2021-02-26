@@ -134,13 +134,17 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   DisEntry:{
+    flex:1,
     flexDirection:"row",
     backgroundColor:'#00abb1',
     borderColor: '#00abb1',
     borderWidth: 1,
     borderRadius: 5,
     padding: 2,
-    width: 350,
+    marginBottom:10,
+    justifyContent: 'center', //Centered vertically
+   alignItems: 'center',
+    
   },
   itemMatch:{
     borderColor: '#00abb1',
@@ -162,7 +166,10 @@ const styles = StyleSheet.create({
   },
   text:{
     flex:1,
-    color:'white'
+    color:'white',
+    fontSize:20,
+    textAlign:"center",
+    
   },
   openButton: {
     backgroundColor: "#F194FF",
