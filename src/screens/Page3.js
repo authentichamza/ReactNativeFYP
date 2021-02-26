@@ -18,12 +18,7 @@ const db= firebase.firestore();//for firestore connection from firebase
 let input = db.collection('userSymptoms');
 let symptomsRef=db.collection('datasetDisease')
 
-let addItem = item => {//Add into userSymptom with firestore generated unique id document
-  input.doc().set({
-    userSymptom: item
-  });
-  
-};
+
 
 
 export default class App extends React.Component {
@@ -33,8 +28,8 @@ constructor(props) {
     this.state = {
       tagsSelected:this.props.route.params.selected,//selected tags stored from page 2
       storedTags:this.props.route.params.stored,//stored tags stored from page 2
-      result:['HIV','Flu'],
-      data1:[],
+      result:[],
+      select:[],
       index: 0,
       routes: [
         { key: 'first', title: 'First' },
@@ -42,37 +37,58 @@ constructor(props) {
         { key: 'third', title: 'Third'}],
       modalVisible: false,
     };
-  }
-  
+}
   async componentDidMount(){
     let select=[];
+    let dict=[];
     let tagsSelected=this.state.tagsSelected
     tagsSelected.forEach(element => {
       select.push(element.name)
     });
-    
     await symptomsRef.where("Symptom", "array-contains-any", select).get().then((querySnapshot) => {
-      data=querySnapshot.docs.map((doc) => (doc.id));
-      console.log("in", data);
-      // Users with > 1 book:  [ { id: 'user-1', count: 1 } ]
-    });
-    // console.log("out",this.state.result)
-      this.onResultChange(data)
-      this.modalElement.current.changeDis(this.state.result)
-     console.log("out",this.state.result)
-     
-    // console.log("out",result)
+      data=querySnapshot.docs.map((doc) => {
+        const data = doc.data().Symptom;
+        const Disease = doc.id;
+        const temp={};
+        temp[Disease]=data;
+        console.log(data)
+        temp['degree']=this.findMatchDegree(select,data)
+        dict.push(temp);
 
+      });
+  
+      }
+      );
+  
+    this.onResultChange(dict);
+    this.modalElement.current.changeDis(this.state.result)
+    console.log(this.state.result)
   }
+  addItem = item => {//Add into userSymptom with firestore generated unique id document
+    input.doc().set({
+      userSymptom: item
+    });
+    this.setState({tagsSelected:item})
+    
+  };
   onResultChange(data){
     this.setState({result:data})
   }
+  findMatchDegree(enteredSymptoms,actualSymptoms){
+    
+    found = enteredSymptoms.filter( (val) => actualSymptoms.includes(val) )
+    console.log("match",found)
+    // console.log("match length",found.length)
+    // console.log("matching %",(found.length - (enteredSymptoms.length - found.length))/actualSymptoms.length)
+    return [found,(((found.length - (enteredSymptoms.length - found.length))/actualSymptoms.length)*100).toPrecision(4)]
+  }
+  
   FirstRoute = () => (// What to show in the first tab 
     //Modal with props to be sent to Modal component so that visiblity can be adjusted iinside a scroll view
-
+    
     <ScrollView style={[styles.container, { backgroundColor: 'white' }]} >
       
-    <DiseaseComponent ref={this.modalElement} visible={this.state.modalVisible} Symptom={this.state.tagsSelected} />
+    <DiseaseComponent ref={this.modalElement} visible={this.state.modalVisible} />
     </ScrollView>
   );
   SecondRoute = () => (// What to show in the second tab
@@ -108,7 +124,6 @@ constructor(props) {
  
    
   render() {
-    
     // if (!this.state.result) {
     //   return (
     //     <ActivityIndicator
@@ -135,9 +150,6 @@ constructor(props) {
                     onPress={this.handleSubmit}>
                     <Text style={styles.buttonText}>Search</Text>
                 </TouchableHighlight>
-            </View>
-            <View>
-              <Text>{this.state.result}</Text>
             </View>
             <TabView // Tabbed View component
                 style={styles.tab}

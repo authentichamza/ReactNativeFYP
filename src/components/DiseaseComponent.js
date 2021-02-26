@@ -8,19 +8,9 @@ import {
   View,
   FlatList
 } from "react-native";
-import firebase  from '../config';
 import ProgressCircle from 'react-native-progress-circle'
-import { color } from "react-native-reanimated";
 
-const db= firebase.firestore();
-let diseaseData =db.collection('datasetDisease')// storing connection of datasetDisease into diseaseData var
-let symptoms=[];
-// diseaseData.get().then(querySnapshot => {
-//   querySnapshot.forEach((doc) => {
-//     doc.data() //is never undefined for query doc snapshots
-//     console.log(doc.data().Symptom);
-// });
-// });
+
 export default class App extends React.Component  {
   constructor(props) {
     super(props)
@@ -28,9 +18,10 @@ export default class App extends React.Component  {
       modalVisible: this.props.visible,// Modal visible variable received from page 3
       result:[],
       symptoms:[],
-      item:'______',
+      match:'',
+      mismatch:'',
       dis:'',
-      sessionSymptom:[],
+      
     }
   }
   changeDis(dis){
@@ -46,7 +37,10 @@ export default class App extends React.Component  {
   change(dis){
     this.setState({dis:dis});
   }
-  
+  fetchSymptoms(dis){
+    this.setState({match:Object.values(dis['degree'])[0]})
+    this.setState({mismatch: Object.values(dis[Object.keys(dis)[0]]).filter(x => !Object.values(dis['degree'])[0].includes(x))})
+  }
   render() {
     return (
       <View>
@@ -63,10 +57,17 @@ export default class App extends React.Component  {
                 <View style={styles.modalView}>
                   <Text style={styles.modalText}>{this.state.dis}</Text>
                   <FlatList
-                    data={this.state.symptoms}
-                    renderItem={({item}) => <Text style={styles.item}>{this.state.item}</Text>}
-                    numColumns={2} // 2 symptoms per row
-                  />
+                    
+                      data={this.state.match}
+                      renderItem={({item}) => <Text style={styles.itemMatch}>{item}</Text>}
+                      numColumns={2} // 2 symptoms per row
+                    />
+                    <FlatList
+                   
+                      data={this.state.mismatch}
+                      renderItem={({item}) => <Text style={styles.itemMismatch}>{item}</Text>}
+                      numColumns={1} // 2 symptoms per row
+                    />
                   <TouchableHighlight
                     style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
                     onPress={() => {
@@ -81,23 +82,22 @@ export default class App extends React.Component  {
           </View>
           
           {this.state.result.map((dis)=>{
-            let x=this.setEnteredSymptoms(this.state.symptoms,Object.values(dis))
             return(
           <View style={styles.container}> 
             <TouchableHighlight style={styles.back} 
-            onPress={()=>{this.setModalVisible(true);this.change(dis);this.fetchSymptoms(dis);
+            onPress={()=>{this.setModalVisible(true);this.change(Object.keys(dis)[0]);this.fetchSymptoms(dis);
             }}>  
                 <View style={styles.DisEntry}>
-                    <Text style={styles.text}>{Object.keys(dis)}</Text>
+                    <Text style={styles.text}>{Object.keys(dis)[0]}</Text>
                     <ProgressCircle
-                        percent={30}
+                        percent={dis['degree'][1]}
                         radius={50}
                         borderWidth={8}
                         color="#3399FF"
                         shadowColor="#999"
                         bgColor="#fff"
                     >
-                    <Text style={{ fontSize: 18 }}>{x}</Text>
+                    <Text style={{ fontSize: 18 }}>{dis['degree'][1]+'%'}</Text>
                   </ProgressCircle>
                 </View>
             </TouchableHighlight>
@@ -142,13 +142,22 @@ const styles = StyleSheet.create({
     padding: 2,
     width: 350,
   },
-  item:{
+  itemMatch:{
     borderColor: '#00abb1',
     borderWidth: 1,
     borderRadius: 5,
     marginRight:5,
     padding:2,
-    backgroundColor:'#00abb1',
+    backgroundColor:'#32a842',
+    color:'white'
+  },
+  itemMismatch:{
+    borderColor: '#00abb1',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginRight:5,
+    padding:2,
+    backgroundColor:'#ff0000',
     color:'white'
   },
   text:{
